@@ -22,6 +22,10 @@ const Display = ({ refreshTrigger }) => {
   const [deletingId, setDeletingId] = useState(null);
   const [updatingId, setUpdatingId] = useState(null);
   const [error, setError] = useState(null);
+  // Calculate the new global status based on majority rule
+// const validatedCount = updatedSubCompetences.filter(sc => sc.validated).length;
+// const totalCount = updatedSubCompetences.length;
+// const globalStatus = validatedCount > totalCount / 2 ? 'validated' : 'not validated';
 
   const fetchData = async () => {
     try {

@@ -28,64 +28,18 @@ const getAll = async (req, res) => {
 // POST create a competence (with enhanced debugging)
 const create = async (req, res) => {
   try {
-    console.log("=== CREATE COMPETENCE DEBUG ===");
-    console.log("Headers:", req.headers);
-    console.log("Raw body:", req.body);
-    console.log("Body type:", typeof req.body);
-    console.log("Body is null/undefined:", req.body == null);
+    const { code, name, subCompetences } = req.body;
     
-    // Enhanced body validation
-    if (req.body == null) {
-      console.log("ERROR: Request body is null or undefined");
-      return res.status(400).json({ 
-        error: "Request body is null or undefined. Make sure Content-Type is application/json" 
-      });
+    // Basic validation
+    if (!code || !name || !Array.isArray(subCompetences) || subCompetences.length === 0) {
+      return res.status(400).json({ error: "Code, name, and subCompetences are required" });
     }
     
-    console.log("Body keys:", Object.keys(req.body));
-    
-    // Check if body is empty
-    if (Object.keys(req.body).length === 0) {
-      console.log("ERROR: Request body is empty");
-      return res.status(400).json({ 
-        error: "Request body is empty. Please provide competence data." 
-      });
-    }
-    
-    // Destructure with defaults to avoid undefined errors
-    const { code, name, subCompetences = [] } = req.body;
-    
-    // Check required fields
-    if (!code) {
-      return res.status(400).json({ error: "Code is required" });
-    }
-    if (!name) {
-      return res.status(400).json({ error: "Name is required" });
-    }
-    if (!Array.isArray(subCompetences) || subCompetences.length === 0) {
-      return res.status(400).json({ error: "SubCompetences array is required and must not be empty" });
-    }
-    
-    console.log("Validation passed, creating competence...");
-    
-    const competenceData = {
-      code,
-      name,
-      subCompetences
-    };
-    
-    console.log("Competence data to save:", competenceData);
-    
-    const newCompetence = new Competence(competenceData);
+    const newCompetence = new Competence({ code, name, subCompetences });
     const saved = await newCompetence.save();
     
-    console.log("Competence saved successfully:", saved);
     res.status(201).json(saved);
-    
   } catch (err) {
-    console.error("Error in create:", err);
-    console.error("Error stack:", err.stack);
-    
     if (err.code === 11000) {
       res.status(400).json({ error: "Competence code already exists" });
     } else {
