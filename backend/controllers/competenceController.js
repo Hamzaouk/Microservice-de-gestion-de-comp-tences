@@ -95,38 +95,29 @@ const create = async (req, res) => {
 };
 
 // PUT update sub-competences
-const updateEvaluation = async (req, res) => {
-  const { id } = req.params;
-  
+const update = async (req, res) => {
   try {
-    console.log("Update evaluation for ID:", id);
-    console.log("Request body:", req.body);
-    
-    if (req.body == null) {
-      return res.status(400).json({ error: "Request body is required" });
-    }
-    
-    const { subCompetences } = req.body;
-    
-    if (!Array.isArray(subCompetences)) {
-      return res.status(400).json({ error: "subCompetences must be an array" });
+    const competence = await Competence.findById(req.params.id);
+    if (!competence) return res.status(404).json({ message: "Compétence non trouvée" });
+
+    const { name, code, subCompetences } = req.body;
+
+    if (name !== undefined) competence.name = name;
+    if (code !== undefined) competence.code = code;
+    if (subCompetences !== undefined) {
+      competence.subCompetences = subCompetences;
+      competence.status = calculateStatus(subCompetences);
     }
 
-    const competence = await Competence.findById(id);
-    if (!competence) {
-      return res.status(404).json({ error: "Competence not found" });
-    }
-
-    competence.subCompetences = subCompetences;
     const updated = await competence.save();
-    
-    console.log("Competence updated successfully");
-    res.json(updated);
+    res.status(200).json(updated);
   } catch (err) {
-    console.error("Error in updateEvaluation:", err);
-    res.status(400).json({ error: err.message });
+    console.error("Erreur update :", err);
+    res.status(500).json({ message: "Erreur serveur" });
   }
 };
+
+
 
 // DELETE a competence
 const remove = async (req, res) => {
@@ -146,6 +137,6 @@ const remove = async (req, res) => {
 module.exports = {
   getAll,
   create,
-  updateEvaluation,
+  update,
   remove
 };

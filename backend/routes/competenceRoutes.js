@@ -1,11 +1,11 @@
 const express = require('express');
-const { getAll, create, updateEvaluation, remove} = require('../controllers/competenceController');
+const { getAll, create, update, remove} = require('../controllers/competenceController');
 
 const router = express.Router();
 
 router.get('/', getAll);
 router.post('/', create);
-router.put('/:id/evaluation', updateEvaluation);
+router.put('/:id', update);
 router.delete('/:id', remove);
 
 // Test route to check if JSON parsing works

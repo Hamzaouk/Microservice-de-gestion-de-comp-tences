@@ -1,7 +1,6 @@
-// frontend/src/components/AddList.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Plus, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { Plus, X, AlertCircle } from 'lucide-react';
 
 const AddList = ({ onAdd, onRefresh }) => {
   const [formData, setFormData] = useState({
@@ -33,15 +32,11 @@ const AddList = ({ onAdd, onRefresh }) => {
   };
 
   const handleChange = (e, index) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     
     if (name === 'subName') {
       const updatedSubs = [...formData.subCompetences];
       updatedSubs[index].name = value;
-      setFormData({ ...formData, subCompetences: updatedSubs });
-    } else if (name === 'validated') {
-      const updatedSubs = [...formData.subCompetences];
-      updatedSubs[index].validated = checked;
       setFormData({ ...formData, subCompetences: updatedSubs });
     } else {
       setFormData({ ...formData, [name]: value });
@@ -209,18 +204,6 @@ const AddList = ({ onAdd, onRefresh }) => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                     />
                   </div>
-                  
-                  <label className="flex items-center gap-2 px-3 py-2 bg-white rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50 transition-colors">
-                    <input
-                      type="checkbox"
-                      name="validated"
-                      checked={sub.validated}
-                      onChange={(e) => handleChange(e, index)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <span className="text-sm text-gray-700">Validated</span>
-                    {sub.validated && <CheckCircle className="w-4 h-4 text-green-600" />}
-                  </label>
 
                   {formData.subCompetences.length > 1 && (
                     <button
